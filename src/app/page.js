@@ -1,15 +1,12 @@
 "use client";
 import "../app/globals.css"
-import Header from "../components/Header.jsx";
 import * as React from "react";
 import { Button } from "../components/ui/button"
-
 
 export default function Home() {
 
   return (
     <>
-      <Header />
 
      <div>
       <h1 className="text-banner">APLICA A NUESTRO <br/> 

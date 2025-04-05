@@ -12,10 +12,12 @@ import {
   export default function becaInfo() {
     return (
       <>
-      <div>
+        <div>
+
         <a href="becaInfo/formSolicitud">
         <Button variant="secondary">Secondary</Button>
         </a>
+        
       </div>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
