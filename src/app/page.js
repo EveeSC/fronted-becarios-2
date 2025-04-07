@@ -2,22 +2,25 @@
 import "../app/globals.css"
 import * as React from "react";
 import { Button } from "../components/ui/button"
+import Header from "../components/Header.jsx"; // Importamos el Header
 
 export default function Home() {
-
   return (
     <>
-
-     <div>
-      <h1 className="text-banner">APLICA A NUESTRO <br/> 
-        PROGRAMA DE BECAS VOAE</h1>
-      <a href="/becaInfo">
-      <Button className="button-banner" variant="outline">MAS INFORMACION SOBRE BECAS AQUÍ</Button>
-      </a>
-      <img
-        src={"https://nbzfqacscxqdfrvrdinu.supabase.co/storage/v1/object/public/resources-project//bannerfondo2.jpg"}
-        className="w-full h-full object-cover"
-      />
+      {/* Agregamos el Header aquí */}
+      <Header />
+      
+      {/* Mantenemos todo el contenido exactamente igual */}
+      <div>
+        <h1 className="text-banner">APLICA A NUESTRO <br/> 
+          PROGRAMA DE BECAS VOAE</h1>
+        <a href="/becaInfo">
+        <Button className="button-banner" variant="outline">MAS INFORMACION SOBRE BECAS AQUÍ</Button>
+        </a>
+        <img
+          src={"https://nbzfqacscxqdfrvrdinu.supabase.co/storage/v1/object/public/resources-project//bannerfondo2.jpg"}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       {/* Cajas de Visión y Misión */}
