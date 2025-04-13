@@ -1,93 +1,110 @@
 "use client";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarProvider,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton
-} from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { LogOut, User, Activity, History } from "lucide-react";
+import { useState } from "react";
+import { User, Activity, History, LogOut } from "lucide-react";
+import Image from "next/image";
+import PerfilContent from "./miPerfil/page";
+import ActividadesContent from "./actividades/page";
+import HistorialContent from "./historialDeActividades/page";
+import Navbar from '@/components/Navbar';
 
-export default function Becarios() {
+export default function BecariosPanel() {
+  const [activeSection, setActiveSection] = useState("perfil");
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case "perfil": return <PerfilContent />;
+      case "actividades": return <ActividadesContent />;
+      case "historial": return <HistorialContent />;
+      default: return <DefaultContent />;
+    }
+  };
+
   return (
-    <SidebarProvider>
-      <div className="flex h-screen">
-        {/* Sidebar personalizado */}
-        <Sidebar 
-          className="bg-[#253A69] text-white"
-          variant="sidebar"
-          collapsible="icon"
-        >
-          <SidebarHeader className="p-4 border-b border-[#3a4f7a]">
-            <h2 className="text-xl font-semibold">Panel de Becarios</h2>
-          </SidebarHeader>
+    <div className="flex w-full min-h-screen bg-gray-50">
+      {/* Panel lateral (sin Navbar) */}
+      <div className="w-72 bg-[#253A69] p-5 text-white shadow-lg flex-shrink-0 flex flex-col fixed h-full">
+        {/* Logo */}
+        <div className="mb-8 flex justify-center">
+          <Image 
+            src="/img/voaelogo2.png" 
+            alt="VOAE Logo"
+            width={150}
+            height={80}
+            className="object-contain"
+            priority
+          />
+        </div>
+        
+        {/* Menú principal */}
+        <ul className="w-full flex flex-col gap-1 flex-grow">
+          <MenuItem 
+            icon={<User size={20} />}
+            label="Mi Perfil"
+            active={activeSection === "perfil"}
+            onClick={() => setActiveSection("perfil")}
+          />
+          <MenuItem 
+            icon={<Activity size={20} />}
+            label="Actividades"
+            active={activeSection === "actividades"}
+            onClick={() => setActiveSection("actividades")}
+          />
+          <MenuItem 
+            icon={<History size={20} />}
+            label="Historial de Actividades"
+            active={activeSection === "historial"}
+            onClick={() => setActiveSection("historial")}
+          />
+        </ul>
 
-          <SidebarContent className="flex-1 overflow-y-auto">
-            <SidebarGroup>
-              <SidebarMenu>
-                {/* Mi Perfil */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    isActive={false}
-                    className="hover:bg-[#3a4f7a]"
-                  >
-                    <User className="size-4" />
-                    <span>Mi Perfil</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+        {/* Botón Cerrar Sesión */}
+        <div className="mt-auto pt-4 border-t border-[#3a4f7a]">
+          <MenuItem 
+            icon={<LogOut size={20} />}
+            label="Cerrar Sesión"
+            onClick={() => console.log("Cerrando sesión...")}
+          />
+        </div>
+      </div>
 
-                {/* Actividades */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    isActive={false}
-                    className="hover:bg-[#3a4f7a]"
-                  >
-                    <Activity className="size-4" />
-                    <span>Actividades</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Historial de Actividades */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    isActive={false}
-                    className="hover:bg-[#3a4f7a]"
-                  >
-                    <History className="size-4" />
-                    <span>Historial de Actividades</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroup>
-          </SidebarContent>
-
-          {/* Pie del Sidebar con botón de cerrar sesión */}
-          <SidebarFooter className="p-4 border-t border-[#3a4f7a]">
-            <Button 
-              variant="ghost" 
-              className="w-full text-white hover:bg-[#3a4f7a] hover:text-white"
-              onClick={() => {
-                // Lógica para cerrar sesión
-                console.log("Cerrando sesión...");
-              }}
-            >
-              <LogOut className="mr-2 size-4" />
-              <span>Cerrar Sesión</span>
-            </Button>
-          </SidebarFooter>
-        </Sidebar>
-
-        {/* Área de contenido principal */}
-        <main className="flex-1 p-8 overflow-y-auto bg-gray-50">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Bienvenido al Panel de Becarios</h1>
-          {/* Contenido principal de la página aquí */}
+      {/* Área de contenido principal (con Navbar) */}
+      <div className="flex flex-col flex-1 ml-72">
+        <Navbar />
+        <main className="flex-1 bg-white overflow-auto">
+          <div className="p-8 max-w-6xl mx-auto">
+            {renderContent()}
+          </div>
         </main>
       </div>
-    </SidebarProvider>
+    </div>
+  );
+}
+
+// Componente MenuItem
+function MenuItem({ icon, label, active, onClick }) {
+  return (
+    <li className="w-full">
+      <button
+        onClick={onClick}
+        className={`flex items-center w-full gap-3 p-3 rounded-md transition-colors ${
+          active ? "bg-[#3a4f7a]" : "hover:bg-[#3a4f7a]/50"
+        }`}
+      >
+        {icon}
+        <span className="text-sm font-medium">{label}</span>
+      </button>
+    </li>
+  );
+}
+
+// Componente DefaultContent
+function DefaultContent() {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-gray-800">Bienvenido</h2>
+      <div className="p-4 bg-gray-100 rounded-lg">
+        <p className="text-gray-600">Seleccione una opción del menú</p>
+      </div>
+    </div>
   );
 }
