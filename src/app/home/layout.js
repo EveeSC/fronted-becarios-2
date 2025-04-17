@@ -1,20 +1,34 @@
-import Footer from "@/components/Footer";
-import Header from "../../components/Header"; // Importamos el Header
+// import Footer from "@/components/Footer";
+// import Header from "../../components/Header"; // Importamos el Header
 
+// export default function home({ children }) {
+//   return (
+//     <html>
+//       <body>
+//         <header>
+//       <Header/>
+//         </header>
+//       {children}
+//       <footer>
+//         <Footer />
+//       </footer>
+//       </body>
+//     </html>
+//   );
+// }
+import Footer from "@/components/Footer"
+import Header from "../../components/Header"
 
-export default function home({ children }) {
+export default function HomeLayout({ children }) {
   return (
-    <html>
-      <body>
-        <header>
-      <Header/>
-        </header>
+    <>
+      <header>
+        <Header />
+      </header>
       {children}
-
       <footer>
         <Footer />
       </footer>
-      </body>
-    </html>
-  );
+    </>
+  )
 }

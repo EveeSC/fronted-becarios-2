@@ -19,12 +19,21 @@ export const metadata = {
   description: "Sistema de gestión de becarios", // Descripción actualizada
 };
 
+
+// export default function RootLayout({ children }) {
+//   return (
+//     <html lang="es">
+//       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
+//         {children}
+//       </body>
+//     </html>
+//   );
+// }
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="es"> {/* Cambiado a español */}
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>
-        {children}
-      </body>
+    <html lang="es">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}>{children}</body>
     </html>
   );
 }
