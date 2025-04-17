@@ -1,3 +1,4 @@
+'use client';
 import {
   Table,
   TableBody,
@@ -10,8 +11,9 @@ import {
 import FilterA from "@/components/FilterA";
 import FilterM from "@/components/FilterM";
 import { Button } from "@/components/ui/button";
+import Footer from '@/components/Footer';
 
-const actividades = [
+const historialDeActividades = [
   {
     nombre: "Taller de React",
     horasAcreditadas: "4",
@@ -27,61 +29,60 @@ const actividades = [
 ];
 
 export default function HistorialDeActividades() {
-  // Variables para horas realizadas y mora
   const horasRealizadas = 0;
   const mora = 3;
 
   return (
-    <>
-      <div className="flex flex-row items-center mb-6 w-full">
-        {/* Filtro A */}
-        <div className="scale-[0.7] origin-left mr-0">
-          <FilterA />
-        </div>
-        
-        {/* Filtro M */}
-        <div className="scale-[0.7] origin-left mr-0">
-          <FilterM />
-        </div>
-        
-        {/* Botón Buscar con padding aumentado */}
-        <Button 
-          className="h-10 px-6 ml-2"  // Aumentado a h-10 (40px) y px-6 (24px)
-          style={{ backgroundColor: '#4b77f4', color: 'white' }}
-        >
-          Buscar
-        </Button>
+    <div className="flex flex-col min-h-screen">
+      <div className="container mx-auto px-4 py-8 flex-grow">
+        <div className="flex flex-row items-center mb-6 w-full">
+          <div className="scale-[0.7] origin-left mr-0">
+            <FilterA />
+          </div>
+          
+          <div className="scale-[0.7] origin-left mr-0">
+            <FilterM />
+          </div>
+          
+          <Button 
+            className="h-10 px-6 ml-2"
+            style={{ backgroundColor: '#4b77f4', color: 'white' }}
+          >
+            Buscar
+          </Button>
 
-        {/* Mostrar horas realizadas y mora */}
-        <div className="ml-4 flex flex-col">
-          <span className="text-sm">Horas realizadas: {horasRealizadas}</span>
-          <span className="text-sm">Mora: {mora} horas</span>
+          <div className="ml-4 flex flex-col">
+            <span className="text-sm">Horas realizadas: {horasRealizadas}</span>
+            <span className="text-sm">Mora: {mora} horas</span>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <Table>
+            <TableCaption>Actividades recientes</TableCaption>
+            <TableHeader className="bg-gray-100">
+              <TableRow>
+                <TableHead className="text-center w-[30%]">Nombre</TableHead>
+                <TableHead className="text-center w-[20%]">Horas</TableHead>
+                <TableHead className="text-center w-[25%]">Lugar</TableHead>
+                <TableHead className="text-center w-[25%]">Fecha</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {historialDeActividades.map((actividad) => (
+                <TableRow key={actividad.nombre}>
+                  <TableCell className="text-center">{actividad.nombre}</TableCell>
+                  <TableCell className="text-center">{actividad.horasAcreditadas}</TableCell>
+                  <TableCell className="text-center">{actividad.lugar}</TableCell>
+                  <TableCell className="text-center">{actividad.fecha}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
       
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <Table>
-          <TableCaption>Actividades recientes</TableCaption>
-          <TableHeader className="bg-gray-100">
-            <TableRow>
-              <TableHead className="text-center w-[30%]">Nombre</TableHead>
-              <TableHead className="text-center w-[20%]">Horas</TableHead>
-              <TableHead className="text-center w-[25%]">Lugar</TableHead>
-              <TableHead className="text-center w-[25%]">Fecha</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {actividades.map((actividad) => (
-              <TableRow key={actividad.nombre}>
-                <TableCell className="text-center">{actividad.nombre}</TableCell>
-                <TableCell className="text-center">{actividad.horasAcreditadas}</TableCell>
-                <TableCell className="text-center">{actividad.lugar}</TableCell>
-                <TableCell className="text-center">{actividad.fecha}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </>
+      <Footer />
+    </div>
   );
 }
