@@ -1,11 +1,14 @@
-"use client";
+'use client';
 import { useState } from "react";
 import { User, Activity, History, LogOut } from "lucide-react";
 import Image from "next/image";
-import PerfilContent from "./miPerfil/page";
-import ActividadesContent from "./actividades/page";
-import HistorialContent from "./historialDeActividades/page";
 import Navbar from '@/components/Navbar';
+import dynamic from 'next/dynamic';
+
+// Importaciones dinámicas para evitar errores de SSR
+const PerfilContent = dynamic(() => import('./miPerfil/page'));
+const ActividadesContent = dynamic(() => import('./actividades/page'));
+const HistorialContent = dynamic(() => import('./historialDeActividades/page'));
 
 export default function BecariosPanel() {
   const [activeSection, setActiveSection] = useState("perfil");
@@ -21,7 +24,7 @@ export default function BecariosPanel() {
 
   return (
     <div className="flex w-full min-h-screen bg-gray-50">
-      {/* Panel lateral (sin Navbar) */}
+      {/* Panel lateral */}
       <div className="w-72 bg-[#253A69] p-5 text-white shadow-lg flex-shrink-0 flex flex-col fixed h-full">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
@@ -67,7 +70,7 @@ export default function BecariosPanel() {
         </div>
       </div>
 
-      {/* Área de contenido principal (con Navbar) */}
+      {/* Área de contenido principal */}
       <div className="flex flex-col flex-1 ml-72">
         <Navbar />
         <main className="flex-1 bg-white overflow-auto">
@@ -80,7 +83,7 @@ export default function BecariosPanel() {
   );
 }
 
-// Componente MenuItem
+// Componente MenuItem (sin cambios)
 function MenuItem({ icon, label, active, onClick }) {
   return (
     <li className="w-full">
@@ -97,7 +100,7 @@ function MenuItem({ icon, label, active, onClick }) {
   );
 }
 
-// Componente DefaultContent
+// Componente DefaultContent (sin cambios)
 function DefaultContent() {
   return (
     <div className="space-y-4">
