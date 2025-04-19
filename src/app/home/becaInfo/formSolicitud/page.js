@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
-import axios from "axios"
+import { useEffect } from 'react';
+import axios from "axios";
 import React from 'react';
 
 export default function Example() {
@@ -74,11 +75,15 @@ export default function Example() {
   };
   return (
     <> 
+      
        <div className="w-full max-w-6xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-300 pb-4 mb-6">
-          Formulario de Registro para Solicitar una Beca
-        </h2>
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-300 pb-4 mb-6">
+              Formulario de Registro para Solicitar una Beca
+            </h2>
+          <div>
+        </div>
+       
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {/* primernombre */}
