@@ -1,4 +1,30 @@
+'use client'
+import { jwtDecode } from "jwt-decode"
+import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useEffect } from "react";
+
 export default function PerfilEmpleado(){
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.push("/home");
+    } else {
+      try {
+        const decoded = jwtDecode(token);
+        // Si el rol no es el correcto
+        if (decoded.idrol !== 2) {
+          router.push("/home"); //regresa al login
+        }
+      } catch (error) {
+        console.log("error: ", error)
+        router.push("/home");
+      }
+    }
+  }, []);
     // const [datos, setDatos] = useState({
     //     nombre: "",
     //     dni: "",
@@ -35,7 +61,7 @@ export default function PerfilEmpleado(){
             // value={datos.nombre}
             value="Ana"
             disabled
-            readonly
+            readOnly
             />
             {/* segundo nombre */}
             <input
@@ -44,9 +70,9 @@ export default function PerfilEmpleado(){
             aria-label="disabled input 2"
             style={{width:"300px"}}
             className=" bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md px-3 py-1.5 cursor-not-allowed placeholder-gray-400"
-            value="Disabled readonly input"
+            value="Disabled readOnly input"
             disabled
-            readonly
+            readOnly
             />
             {/* primer apellido */}
             <input
@@ -55,9 +81,9 @@ export default function PerfilEmpleado(){
             aria-label="disabled input 2"
             style={{width:"300px"}}
             className=" bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md px-3 py-1.5 cursor-not-allowed placeholder-gray-400"
-            value="Disabled readonly input"
+            value="Disabled readOnly input"
             disabled
-            readonly
+            readOnly
             />
             {/* segundo apellido */}
             <input
@@ -66,9 +92,9 @@ export default function PerfilEmpleado(){
             aria-label="disabled input 2"
             style={{width:"300px"}}
             className=" bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md px-3 py-1.5 cursor-not-allowed placeholder-gray-400"
-            value="Disabled readonly input"
+            value="Disabled readOnly input"
             disabled
-            readonly
+            readOnly
             />
             {/* email */}
             <input
@@ -77,9 +103,9 @@ export default function PerfilEmpleado(){
             aria-label="disabled input 2"
             style={{width:"300px"}}
             className=" bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md px-3 py-1.5 cursor-not-allowed placeholder-gray-400"
-            value="Disabled readonly input"
+            value="Disabled readOnly input"
             disabled
-            readonly
+            readOnly
             />
             {/* telefono */}
             <input
@@ -89,9 +115,9 @@ export default function PerfilEmpleado(){
             aria-label="disabled input 2"
             style={{width:"300px"}}
             className="row-start-4 bg-gray-100 border border-gray-300 text-gray-500 text-sm rounded-md px-3 py-1.5 cursor-not-allowed placeholder-gray-400"
-            value="Disabled readonly input"
+            value="Disabled readOnly input"
             disabled
-            readonly
+            readOnly
             />
           </div>
         </div>

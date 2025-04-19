@@ -1,14 +1,69 @@
-// 
-
 "use client"
 
 import React from "react"
+import axios from "axios"
+import { jwtDecode } from "jwt-decode"
+import { useRouter } from 'next/navigation';
 
+import { useEffect } from "react"
 import { useState } from "react"
 import { Dialog, DialogPanel, PopoverGroup } from "@headlessui/react"
 import { Bars3Icon, XMarkIcon, EnvelopeIcon, LockClosedIcon, UserIcon } from "@heroicons/react/24/outline"
 
 export default function Header() {
+  const router = useRouter();
+  const[loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  })
+
+  const handleChange = (e) => {
+    const {name, value} = e.target;
+    setLoginData (prev => (
+      {
+        ...prev,
+        [name] : value,
+      }
+    ));
+  }
+
+  const enviarLogin = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await axios.post("http://localhost:3031/api/login", loginData)
+      const { token } = response.data
+
+      if (token) {
+        localStorage.setItem("token", token) // Guardar token
+
+        const decoded = jwtDecode(token) // Decodificar token
+        console.log("Token decodificado:", decoded)
+
+        // Redirigir según el rol
+        if (decoded.idrol === 1) {
+          router.push("/becarios")
+        } else if (decoded.idrol === 2) {
+          router.push("/empleado")
+        } else {
+          alert("Rol desconocido")
+        }
+
+        // Limpiar el formulario
+        setLoginData({
+          email: "",
+          password: "",
+        })
+      } else {
+        alert("Credencial Erronea")
+        localStorage.removeItem("token")
+      }
+    } catch (error) {
+      console.error("ERROR AL ENVIAR EL FORMULARIO", error)
+      localStorage.removeItem("token")
+      alert("Hubo un error al iniciar sesión")
+    }
+  }
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarModalRecuperacion, setMostrarModalRecuperacion] = useState(false);
@@ -112,15 +167,18 @@ export default function Header() {
               </div>
 
               <h2 className="text-xl font-semibold text-center text-[#253A69] mb-6">Iniciar Sesión</h2>
-
-              <form className="space-y-4">
+              {/* onSubmit={enviarLogin} */}
+              <form className="space-y-4" onSubmit={enviarLogin} >
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <UserIcon className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="text"
-                    placeholder="Usuario"
+                    placeholder="Correo"
+                    name="email"
+                    onChange={handleChange}
+                    value={loginData.email}
                     className="bg-white py-3 pl-10 pr-4 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#253A69] focus:border-transparent transition-all"
                   />
                 </div>
@@ -131,6 +189,9 @@ export default function Header() {
                   </div>
                   <input
                     type="password"
+                    name="password"
+                    onChange={handleChange}
+                    value={loginData.password}
                     placeholder="Contraseña"
                     className="bg-white py-3 pl-10 pr-4 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#253A69] focus:border-transparent transition-all"
                   />

@@ -1,10 +1,21 @@
-// 
+'use client'
+import { useRouter } from 'next/navigation';
 
 import React from "react"
 import Link from "next/link"
 import { User, BookOpen, FileText, ClipboardList, BarChart2, LogOut, Bell } from "lucide-react"
 
 export default function EmpleadoLayout({children}) {
+  const router = useRouter();
+
+  const cerrarSesion = () => {
+    // Eliminar el token del localStorage
+    localStorage.removeItem('token')
+
+    // Redirigir al usuario a la página de inicio
+    router.push("/home")
+    alert("bye :D ")
+  }
   return (
     <div className="flex h-screen bg-gray-50">
       <div className="w-64 bg-white shadow-lg h-full flex flex-col">
@@ -62,13 +73,13 @@ export default function EmpleadoLayout({children}) {
           </ul>
         </nav>
         <div className="p-4 border-t">
-          <Link
-            href="/logout"
-            className="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors"
-          >
-            <LogOut className="h-5 w-5 mr-3" />
-            <span>Cerrar Sesión</span>
-          </Link>
+        <button
+          onClick={cerrarSesion}
+          className="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors w-full text-left"
+        >
+          <LogOut className="h-5 w-5 mr-3" />
+          Cerrar Sesión
+        </button>
         </div>
       </div>
 
