@@ -1,6 +1,8 @@
-export default function EmpleadoPage() {
+import { redirect } from 'next/navigation'
+
+export default function Empleado() {
     return (
-      redirect('/perfilEmpleado')
+      redirect('/empleado/perfilEmpleado')
     )
   }
   
