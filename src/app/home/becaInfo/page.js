@@ -1,18 +1,38 @@
+'use client'
+
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-  } from "@/components/ui/accordion"
+} from "@/components/ui/accordion"
 
-  import { Button } from "@/components/ui/button"
+import { Download } from 'lucide-react';
+import { Button } from "@/components/ui/button"
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
 
-  export default function becaInfo() {
+export default function becaInfo() {
+    const [listaPublicaciones, setListaPublicaciones] = useState([]);
+
+  useEffect(() => {
+    const obtenerPublicaciones = async () => {
+      try {
+        const response = await axios.get('http://localhost:3031/api/obtener_publicaciones');
+        setListaPublicaciones(response.data);
+        console.log("publicaciones", response.data);
+      } catch (error) {
+        console.error('Error al obtener publicaciones:', error);
+      }
+    };
+
+    obtenerPublicaciones();
+  }, []);
 
     return (
       <>
-          
-          <div className="grid grid-cols-[2fr_1fr] grid-rows-4 gap-2">
+          <div className="grid grid-cols-[2fr_1fr] grid-rows-auto gap-2">
             <div className="flex items-center justify-center flex-col gap-y-6 h-fit">
               <h1 className={` text-base/10 font-semibold text-gray-900`}>MODALIDADES DE BECAS Y CREDITOS EDUCATIVOS</h1>
               <p className="pl-[40px] pr-[40px] text-justify">
@@ -66,7 +86,7 @@ import {
               </div>
               <div>
                 <a href="https://nbzfqacscxqdfrvrdinu.supabase.co/storage/v1/object/public/resources-project//Requisitos_Becas.pdf?download=1" download>
-                <button style={{width: "270px", fontSize:"10px"}} class="buttonDownload">REQUISITOS PARA OPTAR A UNA BECA</button>
+                <button style={{width: "270px", fontSize:"10px"}} className="buttonDownload">REQUISITOS PARA OPTAR A UNA BECA</button>
                 </a>
               </div>
               <div>
@@ -135,51 +155,74 @@ import {
               </Accordion>
               
             </div>
-            <div className="flex items-center justify-center row-start-3 h-fit">
-              Convocatorias
+
+            <div className="grid grid-rows-2 grid-cols-1 gap-4 flex items-center justify-center row-start-3 h-fit w-full">
+              <div className="w-full rounded-lg p-8">
+                <h2 className="text-xl font-semibold text-gray-900 border-b border-gray-300 pb-4 mb-6">
+                  Comunicados
+                </h2>
+                {/* <div className="w-full">
+                  <div className="flex items-center justify-between bg-white border border-gray-200 px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition duration-300 w-full">
+                    <span className="text-base font-medium text-gray-800 truncate">
+                      Acta de Nacimiento.pdf
+                    </span>
+                    <a
+                      href="http://localhost:3031/public/acta.pdf"
+                      download
+                      className="flex items-center gap-2 text-sm font-semibold border px-4 py-2 rounded-lg transition duration-300"
+                      style={{
+                        borderColor: '#253A69',
+                        color: '#253A69',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = '#253A69';
+                        e.target.style.color = '#ffffff';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = 'transparent';
+                        e.target.style.color = '#253A69';
+                      }}>
+                      <Download className="w-4 h-4" />
+                      Descargar
+                    </a>
+                  </div>
+                </div> */}
+                {listaPublicaciones.map((publicacion, index) => (
+                  <div key={publicacion.idpublicacion} className="w-full">
+                    <div className="flex items-center justify-between bg-white border border-gray-200 px-6 py-4 rounded-xl shadow-sm hover:shadow-md transition duration-300 w-full mb-4">
+                      <span className="text-base font-medium text-gray-800 truncate">
+                        COMUNICADO N0. {index + 1}
+                      </span>
+                      <a
+                        href={publicacion.urlfile}
+                        download
+                        className="flex items-center gap-2 text-sm font-semibold border px-4 py-2 rounded-lg transition duration-300"
+                        style={{
+                          borderColor: '#253A69',
+                          color: '#253A69',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = '#253A69';
+                          e.target.style.color = '#ffffff';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = 'transparent';
+                          e.target.style.color = '#253A69';
+                        }}
+                      >
+                        <Download className="w-4 h-4" />
+                        Descargar
+                      </a>
+                    </div>
+                  </div>
+                ))}
+
+              </div>
             </div>
-            <div className="flex items-center justify-center row-start-4 h-fit">
-              Comunicados
-            </div>
+
+
           </div>
-
-    
-       
-
-
-
-{/* 
-        <div>
-
-        <a href="becaInfo/formSolicitud">
-        <Button variant="secondary">Secondary</Button>
-        </a>
-        
-      </div>
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It adheres to the WAI-ARIA design pattern.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Is it styled?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It comes with default styles that matches the other
-            components&apos; aesthetic.
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger>Is it animated?</AccordionTrigger>
-          <AccordionContent>
-            Yes. It's animated by default, but you can disable it if you prefer.
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion> */}
       </>
-      
-     
     )
-  }
-  
+}
+
