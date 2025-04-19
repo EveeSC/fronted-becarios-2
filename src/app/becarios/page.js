@@ -1,9 +1,10 @@
 'use client';
-import { useState } from "react";
-import { User, Activity, History, LogOut } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { User, LayoutDashboard, FileText, LogOut, Bell } from "lucide-react";
 import Image from "next/image";
-import Navbar from '@/components/Navbar';
 import dynamic from 'next/dynamic';
+import NotificationsPopover from '@/components/NotificationsPopover';
+import './becarios.css';
 
 // Importaciones dinámicas para evitar errores de SSR
 const PerfilContent = dynamic(() => import('./miPerfil/page'));
@@ -12,6 +13,14 @@ const HistorialContent = dynamic(() => import('./historialDeActividades/page'));
 
 export default function BecariosPanel() {
   const [activeSection, setActiveSection] = useState("perfil");
+  const bellRef = useRef(null);
+
+  useEffect(() => {
+    if (bellRef.current) {
+      bellRef.current.style.backgroundColor = "#DEA93F";
+      // Ya no necesitamos cambiar el color del icono aquí porque lo maneja NotificationsPopover
+    }
+  }, []);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -23,58 +32,86 @@ export default function BecariosPanel() {
   };
 
   return (
-    <div className="flex w-full min-h-screen bg-gray-50">
-      {/* Panel lateral */}
-      <div className="w-72 bg-[#253A69] p-5 text-white shadow-lg flex-shrink-0 flex flex-col fixed h-full">
+    <div className="dashboard-container">
+      {/* Sidebar */}
+      <div className="dashboard-sidebar">
         {/* Logo */}
-        <div className="mb-8 flex justify-center">
-          <Image 
-            src="/img/voaelogo2.png" 
-            alt="VOAE Logo"
-            width={150}
-            height={80}
-            className="object-contain"
-            priority
-          />
+        <div className="sidebar-logo">
+          <div className="logo-icon">
+            <Image 
+              src="/img/voaelogo2.png" 
+              alt="VOAE Logo"
+              width={150}
+              height={80}
+              className="logo-image"
+              priority
+            />
+          </div>
         </div>
         
-        {/* Menú principal */}
-        <ul className="w-full flex flex-col gap-1 flex-grow">
-          <MenuItem 
-            icon={<User size={20} />}
-            label="Mi Perfil"
-            active={activeSection === "perfil"}
-            onClick={() => setActiveSection("perfil")}
-          />
-          <MenuItem 
-            icon={<Activity size={20} />}
-            label="Actividades"
-            active={activeSection === "actividades"}
-            onClick={() => setActiveSection("actividades")}
-          />
-          <MenuItem 
-            icon={<History size={20} />}
-            label="Historial de Actividades"
-            active={activeSection === "historial"}
-            onClick={() => setActiveSection("historial")}
-          />
-        </ul>
+        {/* Menú de navegación */}
+        <nav className="sidebar-nav">
+          <ul className="nav-list">
+            <li>
+              <button
+                onClick={() => setActiveSection("perfil")}
+                className={`nav-link ${activeSection === "perfil" ? "active" : ""}`}
+              >
+                <User className="nav-icon" />
+                <span>Mi Perfil</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection("actividades")}
+                className={`nav-link ${activeSection === "actividades" ? "active" : ""}`}
+              >
+                <LayoutDashboard className="nav-icon" />
+                <span>Actividades</span>
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveSection("historial")}
+                className={`nav-link ${activeSection === "historial" ? "active" : ""}`}
+              >
+                <FileText className="nav-icon" />
+                <span>Historial de Actividades</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
 
-        {/* Botón Cerrar Sesión */}
-        <div className="mt-auto pt-4 border-t border-[#3a4f7a]">
-          <MenuItem 
-            icon={<LogOut size={20} />}
-            label="Cerrar Sesión"
-            onClick={() => console.log("Cerrando sesión...")}
-          />
+        {/* Cerrar sesión */}
+        <div className="sidebar-logout">
+          <button className="logout-button" onClick={() => console.log("Cerrando sesión...")}>
+            <LogOut className="logout-icon" />
+            <span>Cerrar Sesión</span>
+          </button>
         </div>
       </div>
 
-      {/* Área de contenido principal */}
-      <div className="flex flex-col flex-1 ml-72">
-        <Navbar />
-        <main className="flex-1 bg-white overflow-auto">
-          <div className="p-8 max-w-6xl mx-auto">
+      {/* Contenido principal */}
+      <div className="dashboard-main">
+        {/* Header */}
+        <header className="main-header">
+          <div className="header-actions">
+            <NotificationsPopover ref={bellRef} />
+            <div className="user-avatar">
+              <Image
+                src="/placeholder.svg"
+                alt="User Profile"
+                width={32}
+                height={32}
+                className="avatar-image"
+              />
+            </div>
+          </div>
+        </header>
+
+        {/* Contenido de la página */}
+        <main className="main-content">
+          <div className="content-container">
             {renderContent()}
           </div>
         </main>
@@ -83,30 +120,12 @@ export default function BecariosPanel() {
   );
 }
 
-// Componente MenuItem (sin cambios)
-function MenuItem({ icon, label, active, onClick }) {
-  return (
-    <li className="w-full">
-      <button
-        onClick={onClick}
-        className={`flex items-center w-full gap-3 p-3 rounded-md transition-colors ${
-          active ? "bg-[#3a4f7a]" : "hover:bg-[#3a4f7a]/50"
-        }`}
-      >
-        {icon}
-        <span className="text-sm font-medium">{label}</span>
-      </button>
-    </li>
-  );
-}
-
-// Componente DefaultContent (sin cambios)
 function DefaultContent() {
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-gray-800">Bienvenido</h2>
-      <div className="p-4 bg-gray-100 rounded-lg">
-        <p className="text-gray-600">Seleccione una opción del menú</p>
+    <div className="default-content">
+      <h2 className="content-title">Bienvenido al Panel de Becarios</h2>
+      <div className="content-placeholder">
+        <p>Seleccione una opción del menú para comenzar</p>
       </div>
     </div>
   );

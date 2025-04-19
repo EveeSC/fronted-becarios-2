@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const modalStyle = {
   position: 'absolute',
@@ -26,7 +27,44 @@ const modalStyle = {
   outline: 'none',
 };
 
-export default function ActividadModal({ actividad, open, handleClose, onAction, isInscrita }) {
+export default function ActividadModal({ 
+  actividad, 
+  open, 
+  handleClose, 
+  onAction, 
+  isInscrita,
+  loadingDetalles 
+}) {
+  // Función para formatear la fecha
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No especificada';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-HN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  if (!actividad) {
+    return (
+      <Modal open={open} onClose={handleClose}>
+        <Fade in={open}>
+          <Box sx={modalStyle}>
+            <Typography variant="h6" color="error">
+              No se encontraron detalles de la actividad
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+    );
+  }
+
   return (
     <Modal
       open={open}
@@ -58,43 +96,46 @@ export default function ActividadModal({ actividad, open, handleClose, onAction,
             <CloseIcon />
           </IconButton>
 
-          <Typography 
-            id="modal-detalles-actividad"
-            variant="h5" 
-            component="h2" 
-            sx={{ 
-              fontWeight: 'bold', 
-              mb: 2,
-              pr: 4,
-              color: '#253A69'
-            }}
-          >
-            {actividad?.titulo || 'Detalles de la Actividad'}
-          </Typography>
-          
-          <div className="space-y-3 text-[#8F8E8E]">
-            <Typography variant="body1">
-              <strong>Horas acreditadas:</strong> {actividad?.horas || 'No especificado'}
-            </Typography>
-            
-            <Typography variant="body1">
-              <strong>Fecha:</strong> {actividad?.fecha || 'No especificada'}
-            </Typography>
-            
-            <Typography variant="body1">
-              <strong>Horario:</strong> {actividad?.horario || 'No especificado'}
-            </Typography>
-            
-            {actividad?.lugar && (
-              <Typography variant="body1">
-                <strong>Lugar:</strong> {actividad.lugar}
-              </Typography>
-            )}
-          </div>
-          
-          {actividad?.descripcion && (
+          {loadingDetalles ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
             <>
+              <Typography 
+                id="modal-detalles-actividad"
+                variant="h5" 
+                component="h2" 
+                sx={{ 
+                  fontWeight: 'bold', 
+                  mb: 2,
+                  pr: 4,
+                  color: '#253A69'
+                }}
+              >
+                {actividad.titulo}
+              </Typography>
+              
+              <div className="space-y-3 text-[#8F8E8E]">
+                <Typography variant="body1">
+                  <strong>Horas acreditadas:</strong> {actividad.horas}
+                </Typography>
+                
+                <Typography variant="body1">
+                  <strong>Fecha:</strong> {formatDate(actividad.fecha)}
+                </Typography>
+                
+                <Typography variant="body1">
+                  <strong>Horario:</strong> {actividad.horario}
+                </Typography>
+                
+                <Typography variant="body1">
+                  <strong>Lugar:</strong> {actividad.lugar}
+                </Typography>
+              </div>
+              
               <hr className="my-4 border-t border-gray-200" />
+              
               <Typography 
                 variant="body1" 
                 sx={{ 
@@ -105,30 +146,30 @@ export default function ActividadModal({ actividad, open, handleClose, onAction,
               >
                 {actividad.descripcion}
               </Typography>
+              
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'flex-end', 
+                mt: 3
+              }}>
+                <Button 
+                  variant="contained"
+                  onClick={onAction}
+                  sx={{
+                    backgroundColor: '#253A69',
+                    color: '#FFFFFF',
+                    '&:hover': {
+                      backgroundColor: '#1E2E56',
+                    },
+                    px: 4,
+                    py: 1
+                  }}
+                >
+                  {isInscrita ? 'MARCAR ASISTENCIA' : 'INSCRIBIRME'}
+                </Button>
+              </Box>
             </>
           )}
-          
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'flex-end', 
-            mt: 3
-          }}>
-            <Button 
-              variant="contained"
-              onClick={onAction}
-              sx={{
-                backgroundColor: '#253A69',
-                color: '#FFFFFF',
-                '&:hover': {
-                  backgroundColor: '#1E2E56',
-                },
-                px: 4,
-                py: 1
-              }}
-            >
-              {isInscrita ? 'MARCAR ASISTENCIA' : 'INSCRIBIRME'}
-            </Button>
-          </Box>
         </Box>
       </Fade>
     </Modal>
