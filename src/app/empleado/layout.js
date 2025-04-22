@@ -45,7 +45,7 @@ export default function EmpleadoLayout({children}) {
             </li>
             <li>
               <Link
-                href="/empleado/becas"
+                href="/empleado/becasEmpleado"
                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
               >
                 <FileText className="h-5 w-5 mr-3" />
@@ -54,7 +54,7 @@ export default function EmpleadoLayout({children}) {
             </li>
             <li>
               <Link
-                href="/empleado/solicitudes"
+                href="/empleado/solicitudesEmpleado"
                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
               >
                 <ClipboardList className="h-5 w-5 mr-3" />
@@ -63,7 +63,7 @@ export default function EmpleadoLayout({children}) {
             </li>
             <li>
               <Link
-                href="/empleado/reportes"
+                href="/empleado/reportesEmpleado"
                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
               >
                 <BarChart2 className="h-5 w-5 mr-3" />
