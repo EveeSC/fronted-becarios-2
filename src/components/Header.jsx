@@ -66,8 +66,13 @@ export default function Header() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
+  //Para el modal de Ingresar correo
   const [mostrarModalRecuperacion, setMostrarModalRecuperacion] = useState(false);
+  //Modal para ingresar el codigo
   const [mostrarModalConfirmacion, setMostrarModalConfirmacion] = useState(false);
+  //Modal para reestablecer la contraseña
+  const [mostrarModalReestablecer, setMostrarModalReestablecer] = useState(false);
+
   const [email, setEmail] = useState("");
 
   const abrirModalRecuperacion = () => {
@@ -82,6 +87,13 @@ export default function Header() {
     setMostrarModalConfirmacion(true);
   };
 
+  const abrirModalReestablecer = () => {
+    setMostrarModalConfirmacion(false);
+    setMostrarModalReestablecer(true);
+  }
+
+  
+
   const volverAInicioSesion = () => {
     setMostrarModalRecuperacion(false);
     setMostrarModal(true);
@@ -91,6 +103,7 @@ export default function Header() {
     setMostrarModal(false);
     setMostrarModalRecuperacion(false);
     setMostrarModalConfirmacion(false);
+    setMostrarModalReestablecer(false);
   };
 
 
@@ -237,25 +250,25 @@ export default function Header() {
             <div className="w-full md:w-1/2 bg-white p-8 rounded-l-lg shadow-lg">
               <div className="flex justify-center mb-6">
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/980/980496.png"
+                  src="https://cdn-icons-png.flaticon.com/512/6323/6323406.png"
                   className="h-[100px] w-auto"
-                  alt="VOAE Logo"
+                  alt="logo correo"
                 />
               </div>
 
-              <h2 className="text-xl font-semibold text-center text-[#253A69] mb-2">Restablecer Contraseña</h2>
+              <h2 className="text-xl font-semibold text-center text-[#253A69] mb-2">Ingresa tu Correo</h2>
               <p className="text-sm text-gray-600 text-center mb-6">
-              Ingresa el código de verificación que enviamos a su correo electrónico. 
+              Ingresa tu correo para enviarte un codigo de recuperación. 
               </p>
 
               <form className="space-y-4" onSubmit={enviarSolicitudRecuperacion}>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    {/* <EnvelopeIcon className="h-5 w-5 text-gray-400" /> */}
+                    <EnvelopeIcon className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
                     type="email"
-                    placeholder="Codigo"
+                    placeholder="correo@ejemplo.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -322,18 +335,29 @@ export default function Header() {
               </div>
 
               <h2 className="text-xl font-semibold text-center text-[#253A69] mb-2">Correo Enviado</h2>
-              <p className="text-sm text-gray-600 text-center mb-6">
-                Hemos enviado instrucciones para restablecer tu contraseña a{" "}
-                <span className="font-medium">{email || "tu correo"}</span>. Por favor revisa tu bandeja de entrada y
-                sigue las instrucciones.
-              </p>
+              <form className="space-y-4" onSubmit={enviarSolicitudRecuperacion}>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="bg-white py-3 pl-10 pr-4 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#253A69] focus:border-transparent transition-all"
+                  />
+                </div>
 
-              <button
-                onClick={cerrarTodosLosModales}
-                className="py-3 px-5 bg-[#253A69] text-white font-medium w-full rounded-lg uppercase hover:bg-[#1c2d50] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#253A69]"
-              >
-                Entendido
-              </button>
+                <button
+                  type="submit"
+                  onClick={abrirModalReestablecer}
+                  className="py-3 px-5 bg-[#253A69] text-white font-medium w-full rounded-lg uppercase hover:bg-[#1c2d50] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#253A69]"
+                >
+                  Enviar
+                </button>
+              </form>
 
               <div className="text-center mt-6">
                 <button
@@ -347,6 +371,81 @@ export default function Header() {
           </DialogPanel>
         </div>
       </Dialog>
+
+
+      {/* Modal de Reestablecer Contraseña */}
+      <Dialog
+        open={mostrarModalReestablecer}
+        onClose={() => setMostrarModalReestablecer(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <DialogPanel className="flex justify-end overflow-hidden min-h-[420px] bg-[url('https://nbzfqacscxqdfrvrdinu.supabase.co/storage/v1/object/public/resources-project//bannerfondo.jpg')] bg-cover bg-center rounded-lg shadow-xl max-w-3xl w-full">
+            <div className="hidden md:block md:w-1/2 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#253A69]/80 to-transparent"></div>
+              <div className="absolute bottom-10 left-10 text-white">
+                <h2 className="text-2xl font-bold mb-2">reestablecer contraeña aqui </h2>
+                <p className="text-sm opacity-90">Revisa tu bandeja de entrada para continuar con el proceso</p>
+              </div>
+            </div>
+            <div className="w-full md:w-1/2 bg-white p-8 rounded-l-lg shadow-lg flex flex-col items-center justify-center">
+              {/* <div className="flex justify-center mb-6">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/4305/4305535.png"
+                  className="h-[100px] w-auto"
+                  alt="VOAE Logo"
+                />
+              </div> */}
+
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <img
+                  src="https://cdn-icons-png.flaticon.com/512/4305/4305535.png"
+                  className="h-[100px] w-auto"
+                  alt="VOAE Logo"
+                />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            
+              </div>
+
+              <form className="space-y-4" onSubmit={enviarSolicitudRecuperacion}>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="bg-white py-3 pl-10 pr-4 w-full rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#253A69] focus:border-transparent transition-all"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  onClick={abrirModalReestablecer}
+                  className="py-3 px-5 bg-[#253A69] text-white font-medium w-full rounded-lg uppercase hover:bg-[#1c2d50] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#253A69]"
+                >
+                  Enviar
+                </button>
+              </form>
+
+              <div className="text-center mt-6">
+                <button
+                  onClick={volverAInicioSesion}
+                  className="text-[#253A69] text-sm hover:underline focus:outline-none"
+                >
+                  Volver a Iniciar Sesión
+                </button>
+              </div>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
+
+
 
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />

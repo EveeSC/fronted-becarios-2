@@ -1,10 +1,26 @@
 'use client'
+
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from "axios";
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { FaSpinner } from 'react-icons/fa';
 
 export default function Example() {
+  const condicionesOpciones = [
+    "Ceguera",
+    "Silla de ruedas",
+    "Mala visión",
+    "Sordera",
+    "Dificultad para hablar",
+    "Ninguna",
+    "Otra"
+  ];
+  
+  const [condicionesSeleccionadas, setCondicionesSeleccionadas] = useState([]);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     dni: '',
     nocuenta: '',
@@ -41,12 +57,70 @@ export default function Example() {
     }));
   };
 
+  const handleCondicionCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+  
+    let nuevasCondiciones;
+    if (checked) {
+      nuevasCondiciones = [...condicionesSeleccionadas, value];
+    } else {
+      nuevasCondiciones = condicionesSeleccionadas.filter(c => c !== value);
+    }
+  
+    setCondicionesSeleccionadas(nuevasCondiciones);
+    setFormData(prev => ({
+      ...prev,
+      condicion: nuevasCondiciones.join(', ')
+    }));
+  };
+  
+
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
+    //Validacion para subir PDF
+    if (!file) {
+      alert('Por favor, sube un archivo PDF antes de enviar el formulario.');
+      return;
+    }
+
+    //Validacion para enviar estado civil
+    if (!formData.estadocivil) {
+      alert('Por favor, selecciona el estado civil.');
+      return;
+    }
+
+    //Validacion para enviar Depto
+    if(!formData.departamento){
+      alert('Por favor, selecciona un departamento')
+    }
+
+    //Validacion para enviar Municipio
+    if(!formData.municipio){
+      alert('Por favor, selecciona un municipio')
+    }
+
+    //Validacion para enviar una Etnia
+    if(!formData.etnia){
+      alert('Por favor, selecciona tu etnia')
+    }
+
+    //Validacion para enviar Municipio
+    if(!formData.idcarrera){
+      alert('Por favor, selecciona tu carrera')
+    }
+
+    //Validacion para ingresar un genero
+    if (!formData.sexo) {
+      alert('Por favor, selecciona el género.');
+      return;
+    }
 
     const data = new FormData();
 
@@ -71,6 +145,9 @@ export default function Example() {
     } catch (error) {
       console.error('Error al enviar:', error);
       alert('Error al enviar el formulario: ' + error.message);
+    }finally {
+      setLoading(false);
+      router.push('/home')
     }
   };
   return (
@@ -170,6 +247,7 @@ export default function Example() {
                 name="dni"
                 onChange={handleChange}
                 value={formData.dni}
+                pattern="[0-9]{4}[0-9]{4}[0-9]{5}"
                 id="dni"
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
@@ -204,6 +282,7 @@ export default function Example() {
             <div className="relative z-0 w-full group">
               <input
                 type="date"
+                max="2006-12-31"
                 name="fechanacimiento"
                 onChange={handleChange}
                 value={formData.fechanacimiento}
@@ -283,6 +362,8 @@ export default function Example() {
               <input
                 type="number"
                 name="cantidadhijos"
+                min="0"
+                max="10"
                 onChange={handleChange}
                 value={formData.cantidadhijos}
                 id="cantidadhijos"
@@ -405,7 +486,7 @@ export default function Example() {
             </div>
           </div>
 
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label htmlFor="condicion" className="block mb-4 text-sm font-medium text-gray-900 dark:text-white">
               Describa su condición
             </label>
@@ -419,7 +500,29 @@ export default function Example() {
                 placeholder=" "
                 required
               />
-          </div>
+          </div> */}
+
+            <div className="mb-6">
+              <label className="block mb-4 text-sm font-medium text-gray-900 dark:text-white">
+                Seleccione su condición
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {condicionesOpciones.map((opcion, index) => (
+                  <label key={index} className="flex items-center space-x-2 text-sm text-gray-700 dark:text-white">
+                    <input
+                      type="checkbox"
+                      value={opcion}
+                      checked={condicionesSeleccionadas.includes(opcion)}
+                      onChange={handleCondicionCheckboxChange}
+                      className="form-checkbox h-4 w-4 text-blue-600"
+                    />
+                    <span>{opcion}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+
           <div className="mb-6">
             <label htmlFor="ocupacion" className="block mb-4 text-sm font-medium text-gray-900 dark:text-white">
               Seleccione una opción
@@ -533,6 +636,8 @@ export default function Example() {
                 name="indiceglobal"
                 onChange={handleChange}
                 value={formData.indiceglobal}
+                min="0"
+                max="100"
                 id="indiceglobal"
                 className="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border border-gray-300 rounded-lg appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
                 placeholder=" "
@@ -548,6 +653,8 @@ export default function Example() {
                 name="indiceperiodo"
                 onChange={handleChange}
                 value={formData.indiceperiodo}
+                min="0"
+                max="100"
                 id="indiceperiodo"
                 className="block py-2.5 px-2 w-full text-sm text-gray-500 bg-transparent border border-gray-300 rounded-lg appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600"
                 placeholder=" "
@@ -560,6 +667,8 @@ export default function Example() {
                 name="nocuenta"
                 onChange={handleChange}
                 value={formData.nocuenta}
+                pattern="^20\d{9}$"
+                maxLength={11}
                 id="nocuenta"
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
@@ -608,12 +717,25 @@ export default function Example() {
               Suba su archivo PDF de documentos escaneados
             </div>
           </div>
-          <div className="flex justify-end mt-8">
+          {/* <div className="flex justify-end mt-8">
             <button
               type="submit"
               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               Enviar Solicitud
+            </button>
+          </div> */}
+          <div className="flex justify-end mt-8">
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-3 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              disabled={loading} // Deshabilitar el botón mientras se envía
+            >
+              {loading ? (
+                <FaSpinner className="animate-spin mr-2" /> // Mostrar ícono de carga
+              ) : (
+                'Enviar Solicitud'
+              )}
             </button>
           </div>
         </form>
