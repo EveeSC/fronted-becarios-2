@@ -1,5 +1,5 @@
 import React from 'react';
-import NotificationsPopover from './NotificationsPopover';
+import NotificationsPopover from './NotificationsModal';
 import { BellIcon } from '@heroicons/react/24/outline';
 
 export default function Navbar() {

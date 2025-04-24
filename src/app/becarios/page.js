@@ -1,9 +1,10 @@
 'use client';
-import { useState, useRef, useEffect } from "react";
-import { User, LayoutDashboard, FileText, LogOut, Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import { User, LayoutDashboard, FileText, LogOut } from "lucide-react";
 import Image from "next/image";
 import dynamic from 'next/dynamic';
-import NotificationsPopover from '@/components/NotificationsPopover';
+import NotificationsModal from '@/components/NotificationsModal';
 import './becarios.css';
 
 // Importaciones dinámicas para evitar errores de SSR
@@ -13,14 +14,29 @@ const HistorialContent = dynamic(() => import('./historialDeActividades/page'));
 
 export default function BecariosPanel() {
   const [activeSection, setActiveSection] = useState("perfil");
-  const bellRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    if (bellRef.current) {
-      bellRef.current.style.backgroundColor = "#DEA93F";
-      // Ya no necesitamos cambiar el color del icono aquí porque lo maneja NotificationsPopover
+    // Verificar autenticación al cargar el componente
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      // Si no hay token, redirigir al home
+      router.push('/home');
+    } else {
+      setIsLoading(false);
     }
-  }, []);
+  }, [router]);
+
+  const handleLogout = () => {
+    // Eliminar el token del localStorage
+    localStorage.removeItem('token');
+    
+    // Redirigir al home
+    router.push('/home');
+    alert("Sesión cerrada correctamente");
+  };
 
   const renderContent = () => {
     switch (activeSection) {
@@ -30,6 +46,15 @@ export default function BecariosPanel() {
       default: return <DefaultContent />;
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Verificando autenticación...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
@@ -84,7 +109,7 @@ export default function BecariosPanel() {
 
         {/* Cerrar sesión */}
         <div className="sidebar-logout">
-          <button className="logout-button" onClick={() => console.log("Cerrando sesión...")}>
+          <button className="logout-button" onClick={handleLogout}>
             <LogOut className="logout-icon" />
             <span>Cerrar Sesión</span>
           </button>
@@ -96,16 +121,7 @@ export default function BecariosPanel() {
         {/* Header */}
         <header className="main-header">
           <div className="header-actions">
-            <NotificationsPopover ref={bellRef} />
-            <div className="user-avatar">
-              <Image
-                src="/placeholder.svg"
-                alt="User Profile"
-                width={32}
-                height={32}
-                className="avatar-image"
-              />
-            </div>
+            <NotificationsModal />
           </div>
         </header>
 

@@ -79,11 +79,59 @@ export default function EmpleadoLayout({ children }) {
         </div>
         <nav className="flex-1 overflow-y-auto py-4">
           <ul className="space-y-1">
+<<<<<<< HEAD
             <li><Link href="/empleado/perfilEmpleado" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"><User className="h-5 w-5 mr-3" /><span>Mi Perfil</span></Link></li>
             <li><Link href="/empleado/actividadesEmpleado" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"><BookOpen className="h-5 w-5 mr-3" /><span>Actividades</span></Link></li>
             <li><Link href="/empleado/becasEmpleado" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"><FileText className="h-5 w-5 mr-3" /><span>Becas</span></Link></li>
             <li><Link href="/empleado/solicitudesEmpleado" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"><ClipboardList className="h-5 w-5 mr-3" /><span>Solicitudes</span></Link></li>
             <li><Link href="/empleado/reportesEmpleado" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"><BarChart2 className="h-5 w-5 mr-3" /><span>Reportes</span></Link></li>
+=======
+            <li>
+              <Link
+                href="/empleado/perfilEmpleado"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
+              >
+                <User className="h-5 w-5 mr-3" />
+                <span>Mi Perfil</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/empleado/actividadesEmpleado"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
+              >
+                <BookOpen className="h-5 w-5 mr-3" />
+                <span>Actividades</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/empleado/becas"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
+              >
+                <FileText className="h-5 w-5 mr-3" />
+                <span>Becas</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/empleado/solicitudes"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
+              >
+                <ClipboardList className="h-5 w-5 mr-3" />
+                <span>Solicitudes</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/empleado/reportes"
+                className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg mx-2 transition-colors"
+              >
+                <BarChart2 className="h-5 w-5 mr-3" />
+                <span>Reportes</span>
+              </Link>
+            </li>
+>>>>>>> d32f6c688adb58964a6d51b8e28f3298cf0feaaa
           </ul>
         </nav>
         <div className="p-4 border-t">
