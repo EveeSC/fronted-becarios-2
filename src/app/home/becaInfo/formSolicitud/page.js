@@ -82,7 +82,6 @@ export default function Example() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
 
     //Validacion para subir PDF
     if (!file) {
@@ -134,12 +133,52 @@ export default function Example() {
       data.append('file', file);
     }
 
+    setLoading(true);
+
     try {
       const response = await axios.post('http://localhost:3031/api/ingresar_solicitante', data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+      //condicion ya enviado
+      if (
+        response.data.mensaje &&
+        response.data.mensaje.includes('ya ha enviado una solicitud este periodo')
+      ) {
+        alert(response.data.mensaje);
+        
+        // Limpiar inputs
+        setFormData({
+          dni: '',
+          nocuenta: '',
+          telefono: '',
+          correoinstitucional: '',
+          primernombre: '',
+          segundonombre: '',
+          primerapellido: '',
+          segundoapellido: '',
+          fechanacimiento: '',
+          sexo: '',
+          estadocivil: '',
+          cantidadhijos: '',
+          departamento: '',
+          municipio: '',
+          coloniaaldea: '',
+          etnia: '',
+          condicion: '',
+          ocupacion: '',
+          indiceglobal: '',
+          indiceperiodo: '',
+          idcarrera:''
+          // agrega los demás campos si tienes más en el form
+        });
+        setFile(null);
+    
+        return;
+      }
+
+      //
       console.log('Enviado correctamente:', response.data);
       alert('Formulario enviado correctamente');
     } catch (error) {
