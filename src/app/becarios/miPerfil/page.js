@@ -1,107 +1,211 @@
-'use client';
+'use client'
+
 import AvatarPerfil from '@/components/ui/avatarPerfil';
-import {
-  Card,
-  CardDescription
-} from "@/components/ui/card";
-import Footer from '@/components/Footer';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-const profileData = [
-  { label: "Nombre", value: "Leonardo Miguel", col: "left" },
-  { label: "Apellido", value: "Davinci", col: "right" },
-  { label: "Número de cuenta", value: "20251021001", col: "left" },
-  { label: "Teléfono", value: "2222-2222", col: "right" },
-  { label: "Correo institucional", value: "leonardo.davinci@unah.hn", col: "left" },
-  { label: "Correo personal", value: "leonardo.davinci@gmail.com", col: "right" },
-  { label: "Centro de estudio", value: "Ciudad Universitaria", col: "left" },
-  { label: "Carrera", value: "Ingeniería en Sistemas", col: "right" },
-  { label: "Dirección", value: "123 Calle Principal, Tegucigalpa", col: "left" }
-];
+export default function MiPerfil() {
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const router = useRouter();
 
-const scholarshipData = [
-  { label: "Tipo de beca", value: "Beca Excelencia Académica Categoría \"B\"" },
-  { label: "Monto", value: "L 1,680.00" },
-  { label: "Fecha de inicio", value: "15/09/2023" },
-  { 
-    label: "Descripción de la beca", 
-    value: "Es una asignación mensual no reembolsable de L1,680.00 a estudiantes universitarios de reingreso cuyo índice académico sea igual o superior a 80% de un mínimo de 10 asignaturas aprobadas en el año académico anterior, o las que el plan exija."
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        // Obtener el token del localStorage (compartido con empleados)
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          router.push('/home'); // Redirigir a home si no hay token
+          return;
+        }
+
+        const response = await fetch('http://localhost:3031/api/mi_perfil/', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener los datos del perfil');
+        }
+
+        const data = await response.json();
+        setProfileData(data.respuesta[0]);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
-];
 
-const ProfileField = ({ label, value }) => (
-  <div className="mb-4">
-    <CardDescription className="text-sm text-gray-600 mb-1">
-      {label}
-    </CardDescription>
-    <Card className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
-      <p className="text-[0.8em] leading-tight text-gray-900">{value}</p>
-    </Card>
-  </div>
-);
+  if (error) {
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Error!</strong>
+        <span className="block sm:inline"> {error}</span>
+      </div>
+    );
+  }
 
-export default function MiPerfilPage() {
+  if (!profileData) {
+    return (
+      <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Aviso!</strong>
+        <span className="block sm:inline"> No se encontraron datos de perfil.</span>
+      </div>
+    );
+  }
+
+  // Preparar los datos para mostrar en el perfil
+  const personalInfo = [
+    { 
+      label: "Nombre", 
+      value: `${profileData.primernombre} ${profileData.segundonombre}`, 
+      id: "nombre" 
+    },
+    { 
+      label: "Apellido", 
+      value: `${profileData.primerapellido} ${profileData.segundoapellido}`, 
+      id: "apellido" 
+    },
+    { 
+      label: "Número de cuenta", 
+      value: profileData.nocuenta, 
+      id: "cuenta" 
+    },
+    { 
+      label: "Teléfono", 
+      value: profileData.telefono, 
+      id: "telefono" 
+    },
+    { 
+      label: "Correo institucional", 
+      value: profileData.correoinstitucional, 
+      id: "correo-institucional" 
+    },
+    { 
+      label: "Dirección", 
+      value: `${profileData.departamento}, ${profileData.municipio}, ${profileData.coloniaaldea}`, 
+      id: "direccion", 
+      fullWidth: true 
+    },
+    { 
+      label: "Centro de estudio", 
+      value: profileData.nombrecentro, 
+      id: "centro" 
+    },
+    { 
+      label: "Facultad", 
+      value: profileData.nombrefacultad, 
+      id: "facultad" 
+    },
+    { 
+      label: "Carrera", 
+      value: profileData.nombrecarrera, 
+      id: "carrera" 
+    }
+  ];
+
+  const scholarshipInfo = [
+    { 
+      label: "Tipo de beca", 
+      value: profileData.tipobeca 
+    },
+    { 
+      label: "Monto", 
+      value: `L ${profileData.monto.toLocaleString('en-US')}.00`, 
+      highlight: true 
+    },
+    { 
+      label: "Fecha de inicio", 
+      value: new Date(profileData.fechainicio).toLocaleDateString('es-HN') 
+    },
+    { 
+      label: "Descripción de la beca", 
+      value: profileData.descripcion,
+      fullWidth: true 
+    }
+  ];
+
+  // Generar iniciales para el avatar
+  const initials = `${profileData.primernombre.charAt(0)}${profileData.primerapellido.charAt(0)}`;
+
   return (
-    <div className="flex flex-col min-h-screen bg-[#F2F2F2]">
-      <div className="max-w-2xl mx-auto flex-grow">
-        <div className="flex justify-center pt-8">
-          <AvatarPerfil
-            editable
-            size={120}
-            fallbackText="LM"
-            alt="Avatar de Leonardo"
-            className="border-4 border-white shadow-md"
+    <div className="py-10 px-4">
+      <div className="flex flex-col items-center mb-12">
+        {/* Componente AvatarPerfil con edición habilitada */}
+        <div className="mb-8">
+          <AvatarPerfil 
+            editable={true}
+            fallbackText={initials}
+            size={128}
           />
         </div>
 
-        <div className="bg-white rounded-none shadow-md p-6 border border-gray-200 mb-6">
-          <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">Mi Perfil</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              {profileData
-                .filter(item => item.col === "left")
-                .map((item) => (
-                  <ProfileField 
-                    key={item.label}
-                    label={item.label}
-                    value={item.value}
+        {/* Mi Perfil Card */}
+        <div className="w-full max-w-3xl rounded-lg border bg-white shadow-md mb-10 overflow-hidden">
+          <div className="border-b p-6">
+            <h2 className="text-2xl text-center font-bold text-gray-800">Mi Perfil</h2>
+          </div>
+          <div className="p-6 pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {personalInfo.map((item) => (
+                <div 
+                  key={item.id} 
+                  className={`space-y-2 ${item.fullWidth ? 'md:col-span-2' : ''}`}
+                >
+                  <label htmlFor={item.id} className="block text-sm font-medium text-gray-700">
+                    {item.label}
+                  </label>
+                  <input
+                    id={item.id}
+                    defaultValue={item.value}
+                    readOnly
+                    className="block w-full rounded-md border border-gray-300 bg-white py-2 px-3 text-[#8F8E8E] focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
-                ))}
-            </div>
-            
-            <div>
-              {profileData
-                .filter(item => item.col === "right")
-                .map((item) => (
-                  <ProfileField 
-                    key={item.label}
-                    label={item.label}
-                    value={item.value}
-                  />
-                ))}
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-none shadow-md p-6 border border-gray-200 mb-6">
-          <h1 className="text-2xl font-bold text-center mb-6 text-gray-800">Mi Beca</h1>
-          
-          <div className="space-y-4">
-            {scholarshipData.map((item) => (
-              <div key={item.label} className="flex items-start">
-                <div className="w-2/5 font-medium text-gray-600 pr-4">
-                  {item.label}
+        {/* Mi Beca Card */}
+        <div className="w-full max-w-3xl rounded-lg bg-white shadow-md overflow-hidden">
+          <div className="p-6">
+            <h2 className="text-2xl text-center font-bold text-gray-800">Mi Beca</h2>
+          </div>
+          <div className="px-6 pb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {scholarshipInfo.map((item, index) => (
+                <div 
+                  key={index} 
+                  className={`space-y-2 ${item.fullWidth ? 'md:col-span-2' : ''}`}
+                >
+                  <span className="block text-sm font-medium text-gray-700">
+                    {item.label}
+                  </span>
+                  <div className={`block w-full bg-white py-2 px-3 text-[#8F8E8E] ${item.highlight ? 'font-semibold' : ''}`}>
+                    {item.value}
+                  </div>
                 </div>
-                <div className="w-3/5 text-gray-900">
-                  {item.value}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 }
